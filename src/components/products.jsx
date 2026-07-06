@@ -1,8 +1,10 @@
 import producimg from "./image.png";
 import whiteTshirt from "./whiteTshirt.jpg";
 import blackTshirt from "./blackTshirt.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
+  const navigate = useNavigate();
   // const amount = 5000;
   // lets add currency dynamically based on the product price
   const currency = "INR";
@@ -48,7 +50,7 @@ const Products = () => {
           const body = { ...response };
 
           const validateResponse = await fetch(
-            "https://razorpaybackend-5ewg.onrender.com/orders/orders/validate",
+            "https://razorpaybackend-5ewg.onrender.com/orders/validate",
             {
               method: "POST",
               body: JSON.stringify(body),
@@ -59,9 +61,19 @@ const Products = () => {
           );
           const jsonResponse = await validateResponse.json();
           console.log("Validation response:", jsonResponse);
-
+          if (jsonResponse.success) {
+            navigate("/thank-you", {
+              state: {
+                amount: orderData.amount,
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+              },
+            });
+          }
           console.log("Complete Razorpay Response:", response);
         },
+
         prefill: {
           name: "Gaurav Kumar",
           email: "gaurav.kumar@example.com",
@@ -78,14 +90,14 @@ const Products = () => {
       rzp1.on("payment.failed", function (response) {
         alert(response.error.code);
         alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
         alert(response.error.metadata.order_id);
         alert(response.error.metadata.payment_id);
       });
       rzp1.open();
-      e.preventDefault();
+      // e.preventDefault();
     } catch (error) {
       console.error("Error creating order:", error);
     }
