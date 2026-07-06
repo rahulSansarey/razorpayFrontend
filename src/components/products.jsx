@@ -10,17 +10,20 @@ const Products = () => {
 
   const paymentHandler = async (amount) => {
     try {
-      const response = await fetch("http://localhost:3000/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://razorpaybackend-5ewg.onrender.com/orders",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount,
+            currency,
+            receipt,
+          }),
         },
-        body: JSON.stringify({
-          amount,
-          currency,
-          receipt,
-        }),
-      });
+      );
 
       const orderData = await response.json();
       console.log("Order created:", orderData);
@@ -45,7 +48,7 @@ const Products = () => {
           const body = { ...response };
 
           const validateResponse = await fetch(
-            "http://localhost:3000/orders/validate",
+            "https://razorpaybackend-5ewg.onrender.com/orders/orders/validate",
             {
               method: "POST",
               body: JSON.stringify(body),
